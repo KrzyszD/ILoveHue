@@ -1,0 +1,1 @@
+Basic Replica of the core mechanics of the phone game "I Love Hue"

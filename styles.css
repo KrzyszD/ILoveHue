@@ -1,0 +1,36 @@
+.square {
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right:auto;
+    min-width: 50px;
+    max-width: 50px;
+    min-height: 50px;
+    max-height: 50px;
+    transition: 0.5s;
+    position:relative;
+}
+
+.colorSquare {
+    position: absolute;
+    border: none;
+    text-align: center;
+    line-height: 50px;
+    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+td {
+    padding: 0px;
+}
+
+table {
+    border-spacing: 0px;
+}
