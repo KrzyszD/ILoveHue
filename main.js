@@ -1,5 +1,5 @@
-var width = 6;
-var height = 6;
+var width = 8;
+var height = 8;
 
 var movableCorners = false;
 
@@ -52,51 +52,56 @@ for (let y = 0; y < height; y++) {
 }
 
 function calcHSL(x, y){ 
-    // (Upper/Lower) (Left/Right) (Hue/Saturation)
-    var ULH = 0;
-    var URH = 300;
-    var LLH = 100;
-    var LRH = 200;
+    // (Hue/Saturation) (Upper/Lower) (Left/Right) 
+    var Hue_UL = 30;
+    var Hue_UR = 300;
+    var Hue_LL = 100;
+    var Hue_LR = 200;
     
-    var ULS = 100;
-    var URS = 80;
-    var LLS = 50;
-    var LRS = 100;
+    var Saturation_UL = 100;
+    var Saturation_UR = 70;
+    var Saturation_LL = 50;
+    var Saturation_LR = 70;
 
-    var ULRGB = hslToRgb(ULH / 360, ULS / 100, 0.5);
-    var URRGB = hslToRgb(URH / 360, URS / 100, 0.5);
-    var LLRGB = hslToRgb(LLH / 360, LLS / 100, 0.5);
-    var LRRGB = hslToRgb(LRH / 360, LRS / 100, 0.5);
+    var RGB_UL = hslToRgb(Hue_UL / 360, Saturation_UL / 100, 0.5);
+    var RGB_UR = hslToRgb(Hue_UR / 360, Saturation_UR / 100, 0.5);
+    var RGB_LL = hslToRgb(Hue_LL / 360, Saturation_LL / 100, 0.5);
+    var RGB_LR = hslToRgb(Hue_LR / 360, Saturation_LR / 100, 0.5);
+
+    var Influence_UL = (1 - x / (width - 1)) * (1 - y / (height - 1));
+    var Influence_UR =      x / (width - 1)  * (1 - y / (height - 1));
+    var Influence_LL = (1 - x / (width - 1)) *      y / (height - 1);
+    var Influence_LR =      x / (width - 1)  *      y / (height - 1);
 
     // RGB Bilinear Interpolation
     // https://math.stackexchange.com/a/3230385
-    var R = (1 - x / (width - 1)) * (1 - y / (height - 1)) * ULRGB[0] + 
-                 x / (width - 1)  * (1 - y / (height - 1)) * URRGB[0] + 
-            (1 - x / (width - 1)) *      y / (height - 1)  * LLRGB[0] + 
-                 x / (width - 1)  *      y / (height - 1)  * LRRGB[0];
+    var R = Influence_UL * RGB_UL[0] + 
+            Influence_UR * RGB_UR[0] + 
+            Influence_LL * RGB_LL[0] + 
+            Influence_LR * RGB_LR[0];
 
-    var G = (1 - x / (width - 1)) * (1 - y / (height - 1)) * ULRGB[1] + 
-                 x / (width - 1)  * (1 - y / (height - 1)) * URRGB[1] + 
-            (1 - x / (width - 1)) *      y / (height - 1)  * LLRGB[1] + 
-                 x / (width - 1)  *      y / (height - 1)  * LRRGB[1];
+    var G = Influence_UL * RGB_UL[1] + 
+            Influence_UR * RGB_UR[1] + 
+            Influence_LL * RGB_LL[1] + 
+            Influence_LR * RGB_LR[1];
 
-    var B = (1 - x / (width - 1)) * (1 - y / (height - 1)) * ULRGB[2] + 
-                 x / (width - 1)  * (1 - y / (height - 1)) * URRGB[2] + 
-            (1 - x / (width - 1)) *      y / (height - 1)  * LLRGB[2] + 
-                 x / (width - 1)  *      y / (height - 1)  * LRRGB[2];
+    var B = Influence_UL * RGB_UL[2] + 
+            Influence_UR * RGB_UR[2] + 
+            Influence_LL * RGB_LL[2] + 
+            Influence_LR * RGB_LR[2];
 
     return "rgb(" + R + ", " + G + ", " + B + ")"
 
     // HSL Bilinear Interpolation
-    // var H = (1 - x / (width - 1)) * (1 - y / (height - 1)) * ULH + 
-    //              x / (width - 1)  * (1 - y / (height - 1)) * URH + 
-    //         (1 - x / (width - 1)) *      y / (height - 1)  * LLH + 
-    //              x / (width - 1)  *      y / (height - 1)  * LRH;
+    // var H = Influence_UL * Hue_UL + 
+    //         Influence_UR * Hue_UR + 
+    //         Influence_LL * Hue_LL + 
+    //         Influence_LR * Hue_LR;
 
-    // var S = (1 - x / (width - 1)) * (1 - y / (height - 1)) * ULS + 
-    //              x / (width - 1)  * (1 - y / (height - 1)) * URS + 
-    //         (1 - x / (width - 1)) *      y / (height - 1)  * LLS + 
-    //              x / (width - 1)  *      y / (height - 1)  * LRS;
+    // var S = Influence_UL * Saturation_UL + 
+    //         Influence_UR * Saturation_UR + 
+    //         Influence_LL * Saturation_LL + 
+    //         Influence_LR * Saturation_LR;
 
     // return "hsl(" + H + ", " + S + "%, 50%)"
 }
